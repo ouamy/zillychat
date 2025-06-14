@@ -51,9 +51,9 @@
         </header>
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-                <section class="flex flex-col items-center text-center lg:items-start lg:text-left w-full">
+                <section class="flex flex-col items-center text-center w-full">
                     <div class="w-full lg:max-w-md">
-                        <img src="{{ asset('images/logo.png') }}" alt="ZillyChat Logo" class="mx-auto lg:mx-0 block w-auto mb-4" style="height: 100px;" />
+                        <img src="{{ asset('images/logo.png') }}" alt="ZillyChat Logo" class="mx-auto block w-auto mb-4" style="height: 100px;" />
                         <h1 class="text-4xl font-bold mb-2">Welcome to <span class="text-yellow-600">ZillyChat !</span></h1>
                         <p class="text-lg text-gray-600">A chat platform for the silly geese.</p>
                         <p class="text-lg text-gray-600">Whether you honk at sunrise or gossip at night, this is your nest now.</p>

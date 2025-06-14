@@ -1,15 +1,15 @@
 <x-form-section submit="createTeam">
     <x-slot name="title">
-        {{ __('Team Details') }}
+        {{ __('Group Details') }}
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Create a new team to collaborate with others on projects.') }}
+        {{ __('Create a new chat group to connect and talk with your friends.') }}
     </x-slot>
 
     <x-slot name="form">
         <div class="col-span-6">
-            <x-label value="{{ __('Team Owner') }}" />
+            <x-label value="{{ __('Group Owner') }}" />
 
             <div class="flex items-center mt-2">
                 <img class="size-12 rounded-full object-cover" src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}">
@@ -22,7 +22,7 @@
         </div>
 
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Team Name') }}" />
+            <x-label for="name" value="{{ __('Group Name') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.name" autofocus />
             <x-input-error for="name" class="mt-2" />
         </div>
