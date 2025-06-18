@@ -9,6 +9,7 @@ A chat platform for the silly geese.
 
 ## Install
 ```bash
+cp .env.example .env
 php artisan key:generate
 ```
 ## Run
