@@ -31,7 +31,7 @@
     </div>
 
 <!-- Chat form -->
-<form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2">
+<form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2 items-center">
   @csrf
   <input
     id="chat-input"
@@ -40,13 +40,22 @@
     placeholder="Type your message..."
     class="flex-grow border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
   />
+  <!-- Emoji picker button -->
   <button
-  type="submit"
-  style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
->
-  Send
-</button>
+    type="button"
+    id="emoji-button"
+    class="flex items-center justify-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 focus:outline-none"
+    aria-label="Pick an emoji"
+  >
+    😊
+  </button>
 
+  <button
+    type="submit"
+    style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
+  >
+    Send
+  </button>
 </form>
 
 </div>
@@ -84,8 +93,12 @@ window.addEventListener('load', () => {
             input.focus();
         });
 
-        emojiBtn.addEventListener('click', () => {
-            picker.togglePicker(emojiBtn);
+                emojiBtn.addEventListener('click', () => {
+            if (picker.pickerVisible) {
+                picker.hidePicker();
+            } else {
+                picker.showPicker(emojiBtn);
+            }
         });
     }
 
