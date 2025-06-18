@@ -4,8 +4,7 @@ A chat platform for the silly geese.
 ## Prerequisites
 - Composer
 - MySQL
-- PhpMyAdmin
-- Caddy
+- phpMyAdmin
 
 ## Install
 ```bash
@@ -19,6 +18,7 @@ npm run build
 ## Run
 ```bash
 php artisan serve
+cd /usr/share/phpmyadmin
 php -S localhost:8080
 ```
 ## Deploy
