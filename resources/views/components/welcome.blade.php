@@ -47,7 +47,7 @@
     class="flex items-center justify-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 focus:outline-none"
     aria-label="Pick an emoji"
   >
-    😊
+    🙂
   </button>
 
   <button
