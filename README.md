@@ -9,8 +9,12 @@ A chat platform for the silly geese.
 
 ## Install
 ```bash
+composer install
+composer update
 cp .env.example .env
 php artisan key:generate
+npm install
+npm run build
 ```
 ## Run
 ```bash
