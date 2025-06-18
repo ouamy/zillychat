@@ -40,6 +40,12 @@
             class="flex-grow border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
         />
         <button
+            type="button"
+            id="emoji-button"
+            class="flex items-center justify-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 focus:outline-none"
+            aria-label="Pick an emoji"
+        >🙂</button>
+        <button
             type="submit"
             style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
         >
@@ -49,10 +55,14 @@
 
 </div>
 
+<!-- Emoji Picker -->
+<script src="https://cdn.jsdelivr.net/npm/emoji-button@2.2.2/dist/index.min.js"></script>
+
 <script>
   const form = document.getElementById('chat-form');
   const input = document.getElementById('chat-input');
   const chatBox = document.getElementById('chat-messages');
+  const emojiBtn = document.getElementById('emoji-button');
   const csrfToken = document.querySelector('input[name="_token"]').value;
 
   // Get last message ID from rendered messages or 0 if none
@@ -62,7 +72,7 @@
     return parseInt(messages[messages.length - 1].getAttribute('data-message-id'));
   })();
 
-  // Helper: format timestamp same as Blade logic
+  // Format timestamp similar to Blade
   function formatTimestamp(dateString) {
     const createdAt = new Date(dateString);
     const now = new Date();
@@ -80,9 +90,8 @@
     }
   }
 
-  // Append message to chat box
+  // Append message
   function appendMessage(msg) {
-    // Avoid duplicates (if message already rendered)
     if (chatBox.querySelector(`[data-message-id="${msg.id}"]`)) return;
 
     const div = document.createElement('div');
@@ -90,12 +99,12 @@
     div.setAttribute('data-message-id', msg.id);
 
     div.innerHTML = `<span class="text-xs text-gray-500 mr-2">${formatTimestamp(msg.created_at)}</span><strong>${msg.user.name}:</strong> ${msg.message}`;
-    
+
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // Submit handler for sending message
+  // Handle form submit
   form.addEventListener('submit', e => {
     e.preventDefault();
     const message = input.value.trim();
@@ -123,7 +132,7 @@
     .catch(() => alert('Network error'));
   });
 
-  // Polling for new messages every 3 seconds
+  // Poll for new messages every 0.5s
   setInterval(() => {
     fetch(`/chat/messages?lastMessageId=${lastMessageId}`)
       .then(res => res.json())
@@ -134,14 +143,41 @@
         });
       })
       .catch(() => {
-        // optionally handle errors silently or log
         console.error('Failed to fetch new messages');
       });
-  }, 3000);
+  }, 500);
 
-  // Scroll to bottom on initial load
+  // Scroll to bottom on load
   window.addEventListener('load', () => {
     chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    const picker = new EmojiButton({
+      position: 'top-start'
+    });
+
+    picker.on('emoji', emoji => {
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      const text = input.value;
+      input.value = text.slice(0, start) + emoji + text.slice(end);
+      input.selectionStart = input.selectionEnd = start + emoji.length;
+      input.focus();
+    });
+
+    let pickerVisible = false;
+
+emojiBtn.addEventListener('click', () => {
+  if (pickerVisible) {
+    picker.hidePicker();
+  } else {
+    picker.showPicker(emojiBtn);
+  }
+  pickerVisible = !pickerVisible;
+});
+
   });
 </script>
 
