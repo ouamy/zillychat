@@ -65,32 +65,37 @@
   const emojiBtn = document.getElementById('emoji-button');
   const csrfToken = document.querySelector('input[name="_token"]').value;
 
-  // Get last message ID from rendered messages or 0 if none
   let lastMessageId = (() => {
     const messages = chatBox.querySelectorAll('[data-message-id]');
     if (messages.length === 0) return 0;
     return parseInt(messages[messages.length - 1].getAttribute('data-message-id'));
   })();
 
-  // Format timestamp similar to Blade
   function formatTimestamp(dateString) {
     const createdAt = new Date(dateString);
     const now = new Date();
     const diffMs = now - createdAt;
-    const diffMins = diffMs / 1000 / 60;
+    const diffSecs = Math.floor(diffMs / 1000);
 
-    if (diffMins <= 60) {
-      const minutesAgo = Math.floor(diffMins);
-      return minutesAgo === 0 ? 'just now' : `${minutesAgo} minute${minutesAgo > 1 ? 's' : ''} ago`;
-    } else {
-      return createdAt.toLocaleString('fr-FR', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      });
-    }
+    if (diffSecs < 5) return "just now";
+    if (diffSecs < 60) return `${diffSecs} second${diffSecs !== 1 ? 's' : ''} ago`;
+
+    const diffMins = Math.floor(diffSecs / 60);
+    if (diffMins < 60) return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays === 1) return `yesterday`;
+    if (diffDays < 7) return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+
+    return createdAt.toLocaleString('fr-FR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
   }
 
-  // Append message
   function appendMessage(msg) {
     if (chatBox.querySelector(`[data-message-id="${msg.id}"]`)) return;
 
@@ -98,13 +103,17 @@
     div.className = 'mb-2';
     div.setAttribute('data-message-id', msg.id);
 
-    div.innerHTML = `<span class="text-xs text-gray-500 mr-2">${formatTimestamp(msg.created_at)}</span><strong>${msg.user.name}:</strong> ${msg.message}`;
+    div.innerHTML = `
+      <span class="text-xs text-gray-500 mr-2" data-created-at="${msg.created_at}">
+        ${formatTimestamp(msg.created_at)}
+      </span>
+      <strong>${msg.user.name}:</strong> ${msg.message}
+    `;
 
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  // Handle form submit
   form.addEventListener('submit', e => {
     e.preventDefault();
     const message = input.value.trim();
@@ -132,7 +141,6 @@
     .catch(() => alert('Network error'));
   });
 
-  // Poll for new messages every 0.5s
   setInterval(() => {
     fetch(`/chat/messages?lastMessageId=${lastMessageId}`)
       .then(res => res.json())
@@ -147,16 +155,19 @@
       });
   }, 500);
 
-  // Scroll to bottom on load
+  setInterval(() => {
+    document.querySelectorAll('[data-created-at]').forEach(span => {
+      const dateStr = span.getAttribute('data-created-at');
+      span.textContent = formatTimestamp(dateStr);
+    });
+  }, 500);
+
   window.addEventListener('load', () => {
     chatBox.scrollTop = chatBox.scrollHeight;
   });
 
-  
   window.addEventListener('DOMContentLoaded', () => {
-    const picker = new EmojiButton({
-      position: 'top-start'
-    });
+    const picker = new EmojiButton({ position: 'top-start' });
 
     picker.on('emoji', emoji => {
       const start = input.selectionStart;
@@ -169,15 +180,10 @@
 
     let pickerVisible = false;
 
-emojiBtn.addEventListener('click', () => {
-  if (pickerVisible) {
-    picker.hidePicker();
-  } else {
-    picker.showPicker(emojiBtn);
-  }
-  pickerVisible = !pickerVisible;
-});
-
+    emojiBtn.addEventListener('click', () => {
+      pickerVisible ? picker.hidePicker() : picker.showPicker(emojiBtn);
+      pickerVisible = !pickerVisible;
+    });
   });
 </script>
 

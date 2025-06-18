@@ -15,7 +15,6 @@ class ChatController extends Controller
     $messages = ChatMessage::with('user')
         ->where('team_id', $team->id)
         ->orderBy('id', 'asc')
-        ->take(100)
         ->get();
 
     return view('chat', compact('messages'));
