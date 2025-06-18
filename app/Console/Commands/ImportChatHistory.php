@@ -23,11 +23,16 @@ class ImportChatHistory extends Command
             return;
         }
 
-        $team = Team::find($teamId);
+        $team = Team::with('users')->find($teamId);
         if (! $team) {
             $this->error("Team not found with ID $teamId");
             return;
-        }
+	}
+
+	$team->load('users');
+
+	// Debug:
+        $this->info('Users in team: ' . $team->users->pluck('name')->join(', '));
 
         $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         $imported = 0;

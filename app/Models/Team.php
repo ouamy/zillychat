@@ -7,6 +7,8 @@ use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
 use Laravel\Jetstream\Team as JetstreamTeam;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends JetstreamTeam
 {
@@ -45,4 +47,13 @@ class Team extends JetstreamTeam
             'personal_team' => 'boolean',
         ];
     }
+    
+
+public function users(): BelongsToMany
+{
+    return $this->belongsToMany(User::class)
+                ->withPivot('role')
+                ->withTimestamps();
+}
+
 }

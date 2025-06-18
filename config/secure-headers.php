@@ -46,7 +46,7 @@ return [
      *
      * Available Value: 'deny', 'sameorigin', 'allow-from <uri>'
      */
-    'x-frame-options' => 'sameorigin',
+    'x-frame-options' => '',
 
     /**
      * X-Permitted-Cross-Domain-Policies
@@ -666,11 +666,6 @@ return [
 
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/form-action
         'form-action' => [
-            //
-        ],
-
-        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
-        'frame-ancestors' => [
             //
         ],
 
