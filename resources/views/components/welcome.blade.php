@@ -30,13 +30,24 @@
         @endif
     </div>
 
-    <!-- Chat form -->
-<form method="POST" action="/chat/send">
+<!-- Chat form -->
+<form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2">
   @csrf
-  <input name="message" type="text" />
-  <button type="submit">Send</button>
-</form>
+  <input
+    id="chat-input"
+    name="message"
+    type="text"
+    placeholder="Type your message..."
+    class="flex-grow border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
+  />
+  <button
+  type="submit"
+  style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
+>
+  Send
+</button>
 
+</form>
 
 </div>
 
