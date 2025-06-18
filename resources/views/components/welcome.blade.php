@@ -1,62 +1,71 @@
-<div class="flex flex-col h-[90vh] w-full max-w-full px-6 py-4 bg-white">
+<div class="flex flex-col h-[90vh] w-full max-w-full px-6 py-4 bg-white dark:bg-gray-900 dark:text-white">
+  <button
+  id="dark-mode-toggle"
+  onclick="toggleDarkMode()"
+  class="inline-block cursor-pointer select-none text-center self-start"
+  style="all: unset; padding: 0.25rem; border: 1px solid #ccc; border-radius: 0.25rem; min-width: 0; width: auto;"
+>
+  🌙
+</button>
 
-    <!-- Chat messages box -->
-    <div id="chat-messages" class="flex-grow overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50 max-w-3xl mx-auto">
-        @if (isset($messages) && $messages->count() > 0)
-            @foreach ($messages as $message)
-                <div class="mb-2" data-message-id="{{ $message->id }}">
-                    <span class="text-xs text-gray-500 mr-2">
-                        @if ($message->created_at)
-                            @php
-                                $diffInMinutes = $message->created_at->diffInMinutes(now());
-                            @endphp
+  <!-- Chat messages box -->
+  <div id="chat-messages" class="flex-grow overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 max-w-3xl mx-auto">
+    @if (isset($messages) && $messages->count() > 0)
+      @foreach ($messages as $message)
+        <div class="mb-2" data-message-id="{{ $message->id }}">
+          <span class="text-xs text-gray-500 mr-2">
+            @if ($message->created_at)
+              @php
+                $diffInMinutes = $message->created_at->diffInMinutes(now());
+              @endphp
 
-                            @if ($diffInMinutes <= 60)
-                                {{ $message->created_at->diffForHumans() }}
-                            @else
-                                {{ $message->created_at->format('d/m/Y H:i') }}
-                            @endif
-                        @else
-                            {{-- No timestamp --}}
-                            From Old ZillyChat
-                        @endif
-                    </span>
-                    <strong>{{ $message->user->name }}:</strong> {{ $message->message }}
-                </div>
-            @endforeach
-        @else
-            <div class="mb-2"><em>No messages yet</em></div>
-        @endif
-    </div>
+              @if ($diffInMinutes <= 60)
+                {{ $message->created_at->diffForHumans() }}
+              @else
+                {{ $message->created_at->format('d/m/Y H:i') }}
+              @endif
+            @else
+              From Old ZillyChat
+            @endif
+          </span>
+          <strong>{{ $message->user->name }}:</strong> {{ $message->message }}
+        </div>
+      @endforeach
+    @else
+      <div class="mb-2"><em>No messages yet</em></div>
+    @endif
+  </div>
 
-    <!-- Chat form -->
-   <form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2 items-center">
-        @csrf
-        <input
-            id="chat-input"
-            name="message"
-            type="text"
-            placeholder="Type your message..."
-            class="flex-grow border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400"
-        />
-        <button
-            type="button"
-            id="emoji-button"
-            class="flex items-center justify-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 focus:outline-none"
-            aria-label="Pick an emoji"
-        >🙂</button>
-        <button
-            type="submit"
-            style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
-        >
-            Send
-        </button>
-    </form>
-<div class="flex w-full max-w-3xl mx-auto items-center gap-2 mt-2">
-  <label for="volume-slider" class="text-sm text-gray-700">Notification Volume:</label>
-  <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" class="flex-grow" />
-</div>
+  <!-- Chat form -->
+  <form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2 items-center">
+    @csrf
+    <input
+      id="chat-input"
+      name="message"
+      type="text"
+      placeholder="Type your message..."
+      class="flex-grow border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400 text-black dark:text-white bg-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400"
+    />
 
+    <button
+      type="button"
+      id="emoji-button"
+      class="flex items-center justify-center border border-gray-300 rounded px-3 py-2 hover:bg-gray-100 focus:outline-none"
+      aria-label="Pick an emoji"
+    >🙂</button>
+
+    <button
+      type="submit"
+      style="background-color:#2563eb; color:white; padding:0.5rem 1rem; border-radius:0.375rem;"
+    >
+      Send
+    </button>
+  </form>
+
+  <div class="flex w-full max-w-3xl mx-auto items-center gap-2 mt-2">
+    <label for="volume-slider" class="text-sm text-gray-700">Notification Volume:</label>
+    <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" class="flex-grow" />
+  </div>
 </div>
 
 <!-- Notification sound audio element -->
@@ -75,13 +84,12 @@
   const emojiBtn = document.getElementById('emoji-button');
   const csrfToken = document.querySelector('input[name="_token"]').value;
   const notificationSound = document.getElementById('notification-sound');
+  const volumeSlider = document.getElementById('volume-slider');
 
-const volumeSlider = document.getElementById('volume-slider');
-notificationSound.volume = parseFloat(volumeSlider.value);
-volumeSlider.addEventListener('input', e => {
-  notificationSound.volume = parseFloat(e.target.value);
-});
-
+  notificationSound.volume = parseFloat(volumeSlider.value);
+  volumeSlider.addEventListener('input', e => {
+    notificationSound.volume = parseFloat(e.target.value);
+  });
 
   let lastMessageId = (() => {
     const messages = chatBox.querySelectorAll('[data-message-id]');
@@ -166,10 +174,8 @@ volumeSlider.addEventListener('input', e => {
         messages.forEach(msg => {
           appendMessage(msg);
 
-          // Play notification sound only if message is from another user
           if (msg.user.id !== currentUserId) {
             notificationSound.play().catch(() => {
-              // Ignore autoplay errors from browser
               console.log("Notification sound blocked by browser autoplay policy.");
             });
           }
@@ -211,6 +217,34 @@ volumeSlider.addEventListener('input', e => {
       pickerVisible ? picker.hidePicker() : picker.showPicker(emojiBtn);
       pickerVisible = !pickerVisible;
     });
+  });
+
+  const toggleButton = document.getElementById('dark-mode-toggle');
+
+  const setToggleButtonIcon = () => {
+    if (document.documentElement.classList.contains('dark')) {
+      toggleButton.textContent = '☀️';  // sun for dark mode active
+    } else {
+      toggleButton.textContent = '🌙';  // moon for light mode active
+    }
+  };
+
+  const toggleDarkMode = () => {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('dark-mode', isDark ? 'true' : 'false');
+    setToggleButtonIcon();
+  };
+
+  // On page load: restore saved mode and update button icon
+  window.addEventListener('DOMContentLoaded', () => {
+    const stored = localStorage.getItem('dark-mode');
+    if (stored === 'true' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    setToggleButtonIcon();
   });
 </script>
 
