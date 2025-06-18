@@ -30,7 +30,7 @@
     </div>
 
     <!-- Chat form -->
-    <form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2 items-center">
+   <form method="POST" action="/chat/send" id="chat-form" class="flex w-full max-w-3xl mx-auto gap-2 items-center">
         @csrf
         <input
             id="chat-input"
@@ -52,18 +52,36 @@
             Send
         </button>
     </form>
+<div class="flex w-full max-w-3xl mx-auto items-center gap-2 mt-2">
+  <label for="volume-slider" class="text-sm text-gray-700">Notification Volume:</label>
+  <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" class="flex-grow" />
+</div>
 
 </div>
+
+<!-- Notification sound audio element -->
+<audio id="notification-sound" src="/sounds/notification.mp3" preload="auto"></audio>
 
 <!-- Emoji Picker -->
 <script src="https://cdn.jsdelivr.net/npm/emoji-button@2.2.2/dist/index.min.js"></script>
 
 <script>
+  // Pass current user ID from Laravel to JS
+  const currentUserId = @json(auth()->id());
+
   const form = document.getElementById('chat-form');
   const input = document.getElementById('chat-input');
   const chatBox = document.getElementById('chat-messages');
   const emojiBtn = document.getElementById('emoji-button');
   const csrfToken = document.querySelector('input[name="_token"]').value;
+  const notificationSound = document.getElementById('notification-sound');
+
+const volumeSlider = document.getElementById('volume-slider');
+notificationSound.volume = parseFloat(volumeSlider.value);
+volumeSlider.addEventListener('input', e => {
+  notificationSound.volume = parseFloat(e.target.value);
+});
+
 
   let lastMessageId = (() => {
     const messages = chatBox.querySelectorAll('[data-message-id]');
@@ -147,6 +165,15 @@
       .then(messages => {
         messages.forEach(msg => {
           appendMessage(msg);
+
+          // Play notification sound only if message is from another user
+          if (msg.user.id !== currentUserId) {
+            notificationSound.play().catch(() => {
+              // Ignore autoplay errors from browser
+              console.log("Notification sound blocked by browser autoplay policy.");
+            });
+          }
+
           lastMessageId = Math.max(lastMessageId, msg.id);
         });
       })
