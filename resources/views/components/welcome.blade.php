@@ -1,5 +1,6 @@
 <div class="flex flex-col h-[90vh] w-full max-w-full px-6 py-4 bg-white dark:bg-gray-900 dark:text-white">
-  <button
+
+<!--  <button
   id="dark-mode-toggle"
   onclick="toggleDarkMode()"
   class="inline-block cursor-pointer select-none text-center self-start"
@@ -7,6 +8,7 @@
 >
   🌙
 </button>
+-->
 
   <!-- Chat messages box -->
   <div id="chat-messages" class="flex-grow overflow-y-auto border border-gray-300 rounded p-4 mb-4 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 max-w-3xl mx-auto">
