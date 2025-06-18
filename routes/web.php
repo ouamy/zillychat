@@ -38,9 +38,3 @@ Route::get('/email/verify', function (Request $request) {
 
 Route::get('/login/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/login/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-
-Route::get('/test-session', function () {
-    session(['foo' => 'bar']);
-    return session('foo', 'not set');
-});
-
